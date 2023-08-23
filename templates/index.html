@@ -111,8 +111,8 @@
     <script type="text/javascript">
       
     // Server URL
-    const url = 'http://localhost:5502'
-    // const url = 'http://34.68.132.80:5502'
+    const url = 'http://localhost:5502/'
+    // const url = 'http://34.68.132.80:5502/'
 
       idName = "invoice number";
 
@@ -128,10 +128,8 @@
       }
 
       // Fill table
-      function fillTable(tableName, idName) {
-        getFromServer(tableName).then((data) => {
-          // clear the selection table
-          document.getElementById(tableName).innerHTML = "";
+      function fillTable(data, idName) {
+        console.log(data)
           let properties = [];
           // For each item in the selection array, store the properties in an array called properties (don't repeat properties)
           for (let i = 0; i < data.length; i++) {
@@ -142,7 +140,7 @@
             }
           }
           // Create the table header
-          let table = document.getElementById(tableName);
+          let table = document.getElementById("selection");
           let header = table.createTHead();
           let row = header.insertRow(0);
           for (let i = 0; i < properties.length; i++) {
@@ -175,10 +173,8 @@
               }
             }
           }
-        });
       }
 
-      fillTable("selection", "invoice number");
       addModuleNames();
 
       function logAction(action) {
@@ -243,7 +239,7 @@
             if (json["status"] == "success") {
               logAction(json["message"]);
 
-              fillTable("selection", "isbn");
+              fillTable(json["items"], "invoice number");
             } else {
               logAction(json["message"]);
             }

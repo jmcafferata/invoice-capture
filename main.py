@@ -19,6 +19,10 @@ import pytesseract
 
 app = Flask(__name__)
 
+
+url = 'http://localhost:5502/'
+# url = 'http://34.68.132.80:5502/'
+
 # Show index.html
 @app.route('/', methods=['GET'])
 def index():
@@ -140,10 +144,8 @@ def upload_pdf():
         
         extracted_text = ocr_pdf(pdf_path)
         items_json = extract_details(extracted_text,prompt)
-        # replace selection.json with items_json
-        with open('selection.json', 'w', encoding='utf-8') as f:
-            json.dump(items_json, f, ensure_ascii=False, indent=4)
-        return jsonify({'status': 'success', 'message': 'Done!'})
+
+        return jsonify({'status': 'success', 'message': 'PDF uploaded successfully.', 'items': items_json})
     except Exception as e:
         print(e)
         return jsonify({'status': 'error', 'error': str(e)})
