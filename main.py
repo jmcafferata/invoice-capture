@@ -134,11 +134,12 @@ def upload_pdf():
         if pdf.filename == '':
             return jsonify({'status': 'error', 'message': 'No selected file.'}), 400
         
+        prompt = request.form['prompt']
         pdf_path = 'pdf.pdf'
         pdf.save(pdf_path)
         
         extracted_text = ocr_pdf(pdf_path)
-        items_json = extract_details(extracted_text)
+        items_json = extract_details(extracted_text,prompt)
         # replace selection.json with items_json
         with open('selection.json', 'w', encoding='utf-8') as f:
             json.dump(items_json, f, ensure_ascii=False, indent=4)
@@ -163,7 +164,7 @@ def ocr_image(image_path):
     return extracted_text
 
 # Extract details from OCR text
-def extract_details(text):
+def extract_details(text,prompt):
 
     #get openai api key from openai_api_key.txt
     with open('openai_api_key.txt', 'r') as f:
@@ -171,7 +172,7 @@ def extract_details(text):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role":"system","content":"I will give you OCR-extracted text. generate an array of item objects with the following properties:Provider,Product/Module (without tier/plan),Tier/Plan (e.g. Starter, Essential, Pro, Enterprise, Light),Price per month,Add-on,Add-on Amount. if some of the fields is absent replace with N/A, and clean up the text so it looks nice."},
+            {"role":"system","content":prompt},
             {"role":"user","content":text},
             {"role":"assistant","content":"here's the array:\n"}
         ])

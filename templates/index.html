@@ -63,6 +63,11 @@
         font-size: 14px;
         padding: 4px;
       }
+      textarea{
+        padding: 6px;
+        margin-bottom:6px;
+      }
+      
     </style>
   </head>
   <body>
@@ -71,7 +76,9 @@
         <img src="static/logo.png" alt="logo" />
       </div>
       <div id="modules">
-        <div class="module" name="Functions">
+        <div class="module" name="Input">
+          <textarea id="prompt"  rows="4" cols="80">I will give you OCR-extracted text. generate an array of item objects with the following properties:Provider,Product/Module (without tier/plan),Tier/Plan (e.g. Starter, Essential, Pro, Enterprise, Light),Price per month,Add-on,Add-on Amount. if some of the fields is absent replace with N/A, and clean up the text so it looks nice.</textarea>
+          <br>
           <!-- Botón de Subir factura (pdf)-->
           <button
             id="upload-btn"
@@ -88,13 +95,9 @@
         </div>
         <div class="module" name="Staging">
           <!-- Contenedor de pdf -->
-
-          <button id="close-image" style="display: none">Clear PDF</button>
           <div id="image-container"></div>
           <!-- Selección de artículos -->
           <table id="selection"></table>
-          <!-- Botón de Agregar a stock -->
-          <button id="empty">Clear results</button>
         </div>
 
         <div class="module" name="Log">
@@ -186,26 +189,27 @@
         }
       }
 
-      // When user clicks #close-image, hide the image-container and remove pdf embed elements inside
-      document.getElementById("close-image").addEventListener("click", () => {
-        document.getElementById("image-container").style.display = "none";
-        document.querySelectorAll("#image-container embed").forEach((e) => {
-          e.remove();
-        });
-        // hide button
-        document.getElementById("close-image").style.display = "none";
-      });
+      
 
       // When user adds a file, upload it to the server
       document.getElementById("upload").addEventListener("change", function () {
+        // empty pdf 
+        document.getElementById("image-container").innerHTML = "";
+        // clear the selection
+        emptyFromServer("selection").then(() => {
+          // clear the selection table
+          document.getElementById("selection").innerHTML = "";
+        });
+        // empty log
+        document.getElementById("log").innerHTML = "";
         logAction("Performing OCR on PDF...");
         // after 2 seconds, log the action
         setTimeout(() => {
           logAction("Prompting OpenAI to extract desired values...");
-        }, 2000);
+        }, 1000);
         setTimeout(() => {
           logAction("Generating response...");
-        }, 4000);
+        }, 2000);
         // check if the file is a PDF
         if (!this.files[0].type.match("application/pdf")) {
           alert("No es un PDF");
@@ -217,13 +221,14 @@
         image.setAttribute("width", "100%");
         image.setAttribute("height", "100%");
 
-        // show button
-        document.getElementById("close-image").style.display = "block";
         document.getElementById("image-container").appendChild(image);
         document.getElementById("image-container").style.display = "block";
 
         // upload the PDF to the server
         let formData = new FormData();
+        // get text prom textarea id=prompt
+        let prompt = document.getElementById("prompt").value;
+        formData.append("prompt", prompt);
         formData.append("file", this.files[0]);
         fetch("/upload_pdf", {
           method: "POST",
@@ -237,21 +242,10 @@
 
               fillTable("selection", "isbn");
             } else {
-              logAction("Error al subir PDF");
+              logAction(json["message"]);
             }
           });
       });
-
-      // When the user clicks on empty, clear the selection
-      document.getElementById("empty").addEventListener("click", function () {
-        // clear the selection
-        emptyFromServer("selection").then(() => {
-          // clear the selection table
-          document.getElementById("selection").innerHTML = "";
-          logAction("Staging cleared");
-        });
-      });
-     
 
      
 
@@ -280,22 +274,7 @@
         }
       });
 
-      // when checkbox changes (if input type is checkbox)
-      document.addEventListener("change", function (e) {
-        if (e.target && e.target.nodeName == "INPUT") {
-          // get the table name from the id of the table
-          let dataName =
-            e.target.parentElement.parentElement.parentElement.parentElement.id;
-          // get the isbn from data-id in cell
-          let id = e.target.parentElement.getAttribute("data-id");
-          // get the property from the data-property in cell
-          let property = e.target.parentElement.getAttribute("data-property");
-          // get the updated value in boolean
-          let value = e.target.checked;
-          // update the data according to the table id (it could be anything)
-          updateData(dataName, idName, id, property, value);
-        }
-      });
+      
 
       function updateData(dataName, idName, id, property, value) {
         // update the server with the new value
