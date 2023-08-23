@@ -111,8 +111,8 @@
     <script type="text/javascript">
       
     // Server URL
-    const url = 'http://localhost:5502/'
-    // const url = 'http://34.68.132.80:5502/'
+    // const url = 'http://localhost:5502/'
+     const url = 'http://34.68.132.80:5502/'
 
       idName = "invoice number";
 
@@ -194,11 +194,6 @@
       document.getElementById("upload").addEventListener("change", function () {
         // empty pdf 
         document.getElementById("image-container").innerHTML = "";
-        // clear the selection
-        emptyFromServer("selection").then(() => {
-          // clear the selection table
-          document.getElementById("selection").innerHTML = "";
-        });
         // empty log
         document.getElementById("log").innerHTML = "";
         logAction("Performing OCR on PDF...");
@@ -229,7 +224,7 @@
         let prompt = document.getElementById("prompt").value;
         formData.append("prompt", prompt);
         formData.append("file", this.files[0]);
-        fetch(url+"/upload_pdf", {
+        fetch("/upload_pdf", {
           method: "POST",
           body: formData,
         })
