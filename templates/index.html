@@ -109,7 +109,10 @@
     </div>
 
     <script type="text/javascript">
-      // CONFIG
+      
+    // Server URL
+    const url = 'http://localhost:5502'
+    // const url = 'http://34.68.132.80:5502'
 
       idName = "invoice number";
 
@@ -230,7 +233,7 @@
         let prompt = document.getElementById("prompt").value;
         formData.append("prompt", prompt);
         formData.append("file", this.files[0]);
-        fetch("/upload_pdf", {
+        fetch(url+"/upload_pdf", {
           method: "POST",
           body: formData,
         })
@@ -357,7 +360,7 @@
 
       // Get data from server
       function getFromServer(dataName) {
-        return fetch("/get_" + dataName)
+        return fetch(url+"/get_" + dataName)
           .then((response) => response.json())
           .then((json) => {
             return json;
@@ -366,14 +369,14 @@
 
       // Erase data from server
       function emptyFromServer(dataName) {
-        return fetch("/empty_" + dataName, {
+        return fetch(url+"/empty_" + dataName, {
           method: "POST",
         }).then((response) => response.json());
       }
 
       // Add selection to server
       function addToServer(dataName, data) {
-        fetch("/add_" + dataName, {
+        fetch(url+"/add_" + dataName, {
           method: "POST",
           body: JSON.stringify(data),
         });
