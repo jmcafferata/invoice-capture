@@ -1,0 +1,16 @@
+[
+    {
+        "Product": "FigJam",
+        "Tier/Plan": "Professional",
+        "Renewal Date": "July 24, 2023 – August 24, 2023",
+        "Number of Seats / Licenses": 3,
+        "Unit Price": "$5.00"
+    },
+    {
+        "Product": "Figma",
+        "Tier/Plan": "Professional",
+        "Renewal Date": "July 24, 2023 – August 24, 2023",
+        "Number of Seats / Licenses": 9,
+        "Unit Price": "$15.00"
+    }
+]

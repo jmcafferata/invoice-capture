@@ -172,7 +172,7 @@ def extract_details(text,prompt):
     with open('openai_api_key.txt', 'r') as f:
         openai.api_key = f.read()
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {"role":"system","content":prompt},
             {"role":"user","content":text},
