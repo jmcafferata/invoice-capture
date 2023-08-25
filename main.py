@@ -132,20 +132,26 @@ def upload_pdf():
     try:
         if 'file' not in request.files:
             return jsonify({'status': 'error', 'message': 'No file part in the request.'}), 400
-        pdf = request.files['file']
-        
-        # Check if the file is empty
-        if pdf.filename == '':
-            return jsonify({'status': 'error', 'message': 'No selected file.'}), 400
-        
-        prompt = request.form['prompt']
-        pdf_path = 'pdf.pdf'
-        pdf.save(pdf_path)
-        
-        extracted_text = ocr_pdf(pdf_path)
-        items_json = extract_details(extracted_text,prompt)
+        # get array of pdfs (there may be more than 1)
+        pdfs = request.files.getlist('file')
 
-        return jsonify({'status': 'success', 'message': 'PDF uploaded successfully.', 'items': items_json})
+        final_json = []
+
+        for pdf in pdfs:
+        
+            # Check if the file is empty
+            if pdf.filename == '':
+                return jsonify({'status': 'error', 'message': 'No selected file.'}), 400
+            
+            prompt = request.form['prompt']
+            pdf_path = 'pdf.pdf'
+            pdf.save(pdf_path)
+            
+            extracted_text = ocr_pdf(pdf_path)
+            items_json = extract_details(extracted_text,prompt)
+            final_json += items_json
+
+        return jsonify({'status': 'success', 'message': 'PDF uploaded successfully.', 'items': final_json})
     except Exception as e:
         print(e)
         return jsonify({'status': 'error', 'error': str(e)})
