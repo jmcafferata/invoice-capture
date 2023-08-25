@@ -78,11 +78,13 @@
         <div class="module" name="Input">
           <textarea id="prompt" rows="4" cols="80">
 I will give you OCR-extracted text of a SaaS invoice. generate an array of item objects with the following properties:
-            Product (just the name - remove the tier/plan name. If you don't know the product name, use the app name (not the legal provider name))
+Provider            
+Product (just the name - remove the tier/plan name. If you don't know the product name, use the app name (not the legal provider name))
             Tier/Plan (Professional, Premium, Pro, Starter, Basic, Standard, etc.)
             Renewal Date
             Number of Seats / Licenses
             Unit Price. 
+            Total due
             if some of the fields is absent replace with N/A, and clean up the text so it looks nice.</textarea
           >
           <br />
