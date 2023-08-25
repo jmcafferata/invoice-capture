@@ -144,11 +144,12 @@ def upload_pdf():
                 return jsonify({'status': 'error', 'message': 'No selected file.'}), 400
             
             prompt = request.form['prompt']
+            model = request.form['model']
             pdf_path = 'pdf.pdf'
             pdf.save(pdf_path)
             
             extracted_text = ocr_pdf(pdf_path)
-            items_json = extract_details(extracted_text,prompt)
+            items_json = extract_details(extracted_text,prompt,model)
             final_json += items_json
 
         return jsonify({'status': 'success', 'message': 'PDF uploaded successfully.', 'items': final_json})
@@ -172,13 +173,13 @@ def ocr_image(image_path):
     return extracted_text
 
 # Extract details from OCR text
-def extract_details(text,prompt):
+def extract_details(text,prompt,model):
 
     #get openai api key from openai_api_key.txt
     with open('openai_api_key.txt', 'r') as f:
         openai.api_key = f.read()
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model=model,
         messages=[
             {"role":"system","content":prompt},
             {"role":"user","content":text},
