@@ -13,9 +13,6 @@
         padding: 0;
         font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
       }
-      tr:nth-child(even) {
-        background-color: #dfe3e8;
-      }
       td {
         padding: 4px;
       }
@@ -23,8 +20,9 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        max-width: 600px;
+        max-width: 1200px;
         margin: auto;
+        align-items: center;
       }
 
       #logo {
@@ -36,7 +34,6 @@
         max-width: 400px;
       }
       .module {
-        background-color: #eff2f7;
         border-radius: 5px;
         padding: 10px;
         margin: 0px 10px 16px 10px;
@@ -55,6 +52,7 @@
         overflow: scroll;
         max-height: 500px;
         display: none;
+        margin-bottom:42px;
       }
       table {
         margin-bottom: 12px;
@@ -88,17 +86,23 @@ Product (just the name - remove the tier/plan name. If you don't know the produc
             if some of the fields is absent replace with N/A, and clean up the text so it looks nice.</textarea
           >
           <br />
+          <br>
           <!-- radio to pick a ai model-->
           <input type="radio" id="gpt3" name="aimodel" value="gpt-3.5-turbo" checked />
-          <label for="gpt3">GPT-3.5-Turbo</label>
+          <label for="gpt3">GPT-3.5-Turbo (cheaper, faster)</label>
+          <br>
+          <br>
           <input type="radio" id="gpt4" name="aimodel" value="gpt-4" />
-          <label for="gpt4">GPT-4</label> 
+          <label for="gpt4">GPT-4 (more accurate)</label> 
+          <br>  
+          <br>
+          <br>
           <!-- Botón de Subir factura (pdf)-->
           <button
             id="upload-btn"
             onclick="document.getElementById('upload').click()"
           >
-            Upload PDF
+            Upload PDFs
           </button>
           <!-- Upload multiple files -->
           <input
@@ -190,7 +194,7 @@ Product (just the name - remove the tier/plan name. If you don't know the produc
         }
       }
 
-      addModuleNames();
+      //addModuleNames();
 
       function logAction(action) {
         // log the action in the log ul. max 5 logs
@@ -207,6 +211,8 @@ Product (just the name - remove the tier/plan name. If you don't know the produc
       document.getElementById("upload").addEventListener("change", function () {
         // empty pdf
         document.getElementById("image-container").innerHTML = "";
+        //hide image container
+        document.getElementById("image-container").style.display = "none";
         // empty log
         document.getElementById("log").innerHTML = "";
 
